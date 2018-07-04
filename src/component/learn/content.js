@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Affix, Row, Col } from 'antd'
-import ThemeConfig from '../../../config/theme'
+import ThemeConfig from '../../config/theme'
 import Work from '../../../src/component/learn/work'
 import Video from '../../../src/component/video'
 import Traning from '../../component/learn/traning'

@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import ThemeConfig from '../../../../config/theme'
+import ThemeConfig from '../../../config/theme'
 import DateUtil from '../../../util/date'
 import LearnCourseAction from '../../../action/learn/course'
 

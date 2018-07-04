@@ -3,7 +3,7 @@ import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 // 支付页面
-import Layout from './components/layout/layout'
+import Layout from './component/layout/layout'
 import Homework from './pages/homework'
 
 const routes = (

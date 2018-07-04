@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, Input, Row, Col, Button, Modal } from 'antd'
-import ThemeConfig from '../../../../config/theme'
+import ThemeConfig from '../../../config/theme'
 import CommonUtil from '../../../util/common'
 import LearnCourseAction from '../../../action/learn/course'
 

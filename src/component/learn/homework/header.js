@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from 'antd'
-import ThemeConfig from '../../../../config/theme'
+import ThemeConfig from '../../../config/theme'
 
 export default (props) => {
   if (props.isH5) {

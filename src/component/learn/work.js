@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ThemeConfig from '../../../config/theme'
+import ThemeConfig from '../../config/theme'
 import {Button, message, Upload, Rate, Input} from 'antd'
 import DateUtil from '../../util/date'
 import CommonUtil from '../../util/common'

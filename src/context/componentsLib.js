@@ -1,151 +1,217 @@
 import React from 'react'
 import AxiosUtil from '../util/axios'
-import ToolsUtil from '../util/tools'
+var AjaxUtil = {}
 
 export const Lib = React.createContext()
 
 export class LibProvider extends React.Component {
   constructor (props) {
     super(props)
-    // 初始化拉数据（根据类型）
-    this.updateLib = async (type) => {
-      let res = await AxiosUtil.get(`/getListData?type=${type}`)
-      switch (type) {
-        case 'vnode':
-          this.vnodeFilter(res)
-          break
-        case 'class':
-          let {show, lib} = res
-          this.setState({
-            classLibrary: lib,
-            classShow: show
-          })
-          break
+
+    this.ajax = {
+      getWork: async function (courseId, workId) {
+        let works = await AxiosUtil.get(`/api/work/${courseId}/${workId}`)
+        this.setState({
+          works
+        })
+        return works
+      },
+
+      getChapterFeedback: async function (courseId, workId) {
+        let workFeedback = await AxiosUtil.get(`/api/learning/getWorkFeedback/${courseId}/${workId}`)
+        this.setState({
+          workFeedback
+        })
+        return workFeedback
+      },
+
+      getSelfAnswer: async function (courseId, workId) {
+        let myAnswer = await AxiosUtil.get(`/api/work/myAnswer/${courseId}/${workId}`)
+        this.setState({
+          myAnswer
+        })
+        return myAnswer
+      },
+
+      getAnswerList: async function (courseId, workId, pn) {
+        let answerList = await AxiosUtil.get(`/api/work/answerList/${courseId}/${workId}?pn=${pn}`)
+        this.setState({
+          answerList
+        })
+        return answerList
       }
-      return res
-    }
 
-    // 保存样式，保存节点
-    this.postLib = async (data, type) => {
-      let name
-      if (type === 'vnode') {
-        name = data.pathName
-        let afterUpdateList = await AxiosUtil.post(`write`, {name, type, data})
-        this.vnodeFilter(afterUpdateList)
-        // 更新com会重新更新样式。所以从新拉取样式
+      // -----
+      getLearningFootprint: function (courseId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning/getLearningFootprint/${courseId}`
+        }, cookie)
+      },
+      saveFootprint: function (courseId, data, cookie) {
+        return AjaxUtil({
+          type: 'post',
+          url: `/api/learning/saveFootprint`,
+          data: data
+        }, cookie)
+      },
+      getCourseMenu: function (courseId, cookie, userAgent, ip) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning/course/${courseId}`
+        }, cookie, userAgent, ip)
+      },
+      getCoursePage: function (courseId, sectionId, page, cookie, userAgent, ip) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning/course/${courseId}/${sectionId}/${page}`
+        }, cookie, userAgent, ip)
+      },
+      getWorkList: function (courseId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/work/workList/${courseId}`
+        }, cookie)
+      },
 
-      } else {
-        // class
-        name = data.name
-        let afterUpdateList = await AxiosUtil.post(`write`, {name, type, data})
-        // this.setState({
-        //   classLibrary: afterUpdateList
-        // })
+
+
+      getQuestionList: function (sectionId, pageNumber, pn, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning-question/pageQuestionList/${sectionId}/${pageNumber}?pn=${pn}`
+        }, cookie)
+      },
+      getMyQuestionList: function (sectionId, pageNumber, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning-question/myPageQuestionList/${sectionId}/${pageNumber}`
+        }, cookie)
+      },
+      getQuestionEvaluate: function (questionId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning-question/questionEvaluate/${questionId}`
+        }, cookie)
+      },
+      getResourceByCourseId: function (courseId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          'url': `/api/learning/getResource/${courseId}`
+        }, cookie)
+      },
+      setWork: function (courseId, workId, data, cookie) {
+        return AjaxUtil({
+          type: 'post',
+          url: `/api/work/workComplete/${courseId}/${workId}`,
+          data: data
+        }, cookie)
+      },
+      /* 作业答案点赞 */
+      answerStar: function (workAnswerId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/work/answerStar/${workAnswerId}`
+        }, cookie)
+      },
+      /* 评论作业答案 */
+      commentAnswer: function (workAnswerId, data, cookie) {
+        return AjaxUtil({
+          type: 'post',
+          url: `/api/work/commentAnswer/${workAnswerId}`,
+          data: data
+        }, cookie)
+      },
+      /* 评论作业答案 */
+      getWorkAnswerEvaluate: function (workAnswerId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/work/workAnswerEvaluate/${workAnswerId}`
+        }, cookie)
+      },
+      evaluateFeedback: function (evaluateId, score, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/work/evaluateFeedback/${evaluateId}?score=${score}`
+        }, cookie)
+      },
+      /* 查看作业答案评论分页列表 */
+      commentList: function (workAnswerId, pn, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/work/commentList/${workAnswerId}?pn=${pn}`
+        }, cookie)
+      },
+      setSection: function (courseId, sectionId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning/course/sectionComplete/${courseId}/${sectionId}`
+        }, cookie)
+      },
+      getMyCourse: function (cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: '/api/learning/myCourse'
+        }, cookie)
+      },
+      getMyNewCourse: function (cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: '/api/course/myCourse'
+        }, cookie)
+      },
+      getTraining: function (id, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning/getTraining/${id}`
+        }, cookie)
+      },
+      signedAgreement: function (courseId, msg, cookie) {
+        let url = '/api/learning/signedAgreement/' + courseId
+        if (msg) {
+          url += '?msg=' + msg
+        }
+        return AjaxUtil({
+          type: 'get',
+          url: url
+        }, cookie)
+      },
+      getTestById: function (testId, cookie) {
+        return AjaxUtil({
+          type: 'get',
+          url: `/api/learning-test/getByTestId/${testId}`
+        }, cookie)
+      },
+      testComplete: function (data) {
+        return AjaxUtil({
+          type: 'post',
+          url: '/api/learning-test/complete',
+          data: data
+        })
+      },
+
+      setChapterFeedback: function (courseId, workId, score, content, cookie) {
+        let url = '/api/learning/workFeedback/' + courseId + '/' + workId + '?score=' + score
+        if (content) {
+          url += '&content=' + content
+        }
+        return AjaxUtil({
+          type: 'get',
+          url: url
+        }, cookie)
       }
-      this.updateLib('class')
-    }
-
-    // 根据vnode导出静态css
-    this.exportCss = async () => {
-      await AxiosUtil.get(`exportCss`)
-    }
-
-    // 导出页面
-    this.postPage = async (data) => {
-      let result = await AxiosUtil.post(`savePage`, {json: data})
-      alert ('post ' + result)
-      return result
-    }
-
-    // 从file中导出json
-    this.getFileTransJson = async (path) => {
-      let result = await AxiosUtil.get(`/xmlToNode?path=${path}`)
-      return result
-    }
-
-    this.getLib = (name, type) => {
-      switch (type) {
-        case 'vnode':
-          // 判断
-          if (name.includes('page')) {
-            return this.beforeAddNode(this.state.pageLibrary[name])
-          } else {
-            return this.beforeAddNode(this.state.vnodeLibrary[name])
-          }
-          break
-        case 'class':
-          return ToolsUtil.getClone(this.state.classLibrary[name])
-          break
-      }
-    }
-
-    // 当前正在编辑的样式
-    this.changeCopyClass = (copyClass) => {
-      this.setState({
-        copyClass: copyClass
-      })
     }
 
     this.state = {
-      classLibrary: {}, // 课程列表
-      classShow: {}, // 展示
-      vnodeLibrary: undefined, // 课程列表
-      pageLibrary: {}, // 课程列表
-      copyClass: {},
-      getLib: this.getLib, // 获取
-      updateLib: this.updateLib, // 更新
-      postLib: this.postLib, // 更新
-      getFileTransJson: this.getFileTransJson, //
-      changeCopyClass: this.changeCopyClass, // 更新
-      postPage: this.postPage, // 更新
-      exportCss: this.exportCss // 更新
+      works: undefined, //
+      workFeedback: undefined, //
+      myAnswer: undefined, //
+      answerList: undefined, //
+      ajax: this.ajax, // 获取
     }
     this.vnodeFilter = this.vnodeFilter.bind(this)
   }
   // 内部使用的。
-  /**
-   * 为原始数据，增加上课程状态。
-   * over 结束
-   * finish 已完成
-   * doing 正在做
-   * @param originCourseList
-   * @returns {*}
-   */
-
-  vnodeFilter (res) {
-    // 1筛选。
-    let pageObj = {}
-    let componentsObj = {}
-    Object.keys(res).forEach((name) => {
-      if (name.includes('page')) {
-        pageObj[name] = res[name]
-      } else {
-        componentsObj[name] = res[name]
-      }
-    })
-    // 2 分类保存
-    this.setState({
-      vnodeLibrary: componentsObj,
-      pageLibrary: pageObj
-    })
-  }
-
-  beforeAddNode (node) {
-    let nodeShadow = ToolsUtil.getClone(node)
-    this.vNodeToDom(nodeShadow)
-    return nodeShadow
-  }
-
-  // 引入前需要重新
-  vNodeToDom (node) {
-    // 根据json。设置出来最单纯的block。
-    node.index = ToolsUtil.uuid(8, 16)
-    if (node.children && node.children.length > 0) {
-      node.children.forEach((node) => {
-        return this.vNodeToDom(node)
-      })
-    }
-  }
 
   render () {
     return (

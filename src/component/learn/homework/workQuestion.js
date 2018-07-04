@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card } from 'antd'
 import DateUtil from '../../../util/date'
-import ThemeConfig from '../../../../config/theme'
+import ThemeConfig from '../../../config/theme'
 
 const colorStyle = '#EA9108'
 

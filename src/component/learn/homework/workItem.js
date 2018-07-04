@@ -1,5 +1,5 @@
 import React from 'react'
-import ThemeConfig from '../../../../config/theme'
+import ThemeConfig from '../../../config/theme'
 import CommonUtil from '../../../util/common'
 import ToolsUtil from '../../../util/tools'
 import { Input, Upload, Icon } from 'antd'

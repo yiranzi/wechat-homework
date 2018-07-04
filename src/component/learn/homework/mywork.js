@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import {MyTextArea, MyUploader} from './workItem'
-import ThemeConfig from '../../../../config/theme'
+import ThemeConfig from '../../../config/theme'
 import ToolsUtil from '../../../util/tools'
 import CommonUtil from '../../../util/common'
 import LearnCourseAction from '../../../../src/action/learn/course'

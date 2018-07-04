@@ -1,70 +1,34 @@
 import React from 'react'
-import ThemeConfig from '../../config/theme'
-import Layout from '../../src/component/layoutN'
-import LearnCourseAction from '../../src/action/learn/course'
+import ThemeConfig from '../config/theme'
 import Header from '../../src/component/learn/homework/header'
-import MyWork from '../../src/component/learn/homework/mywork'
-import Learn401 from '../../src/component/learn/learn401'
-import WorkQuestion from '../../src/component/learn/homework/workQuestion'
-import Evaluate from '../../src/component/learn/homework/evaluate'
-import Feedback from '../../src/component/learn/homework/feedback'
+// import MyWork from '../../src/component/learn/homework/mywork'
+// import Learn401 from '../../src/component/learn/learn401'
+// import WorkQuestion from '../../src/component/learn/homework/workQuestion'
+// import Evaluate from '../../src/component/learn/homework/evaluate'
+// import Feedback from '../../src/component/learn/homework/feedback'
 
 const colorStyle = '#EA9108'
 
-export default class extends React.Component {
+export class HomeWorkPage extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      myAnswer: undefined
-    }
-  }
-  static async getInitialProps ({req}) {
-    let {appData} = req
-    const {isH5} = appData ? appData.browser : {}
-    const {courseId, workId} = req.params
-    try {
-      // 本章作业
-      let works = await LearnCourseAction.getWork(courseId, workId, req.cookies)
-      works = works.response
-      let workFeedback = await LearnCourseAction.getChapterFeedback(courseId, workId, req.cookies)
-      workFeedback = workFeedback.response
-      return {
-        isH5,
-        courseId,
-        workId,
-        works,
-        workFeedback
-      }
-    } catch (error) {
-      if (error.status === 401) {
-        return {
-          error
-        }
-      }
-    }
-  }
-  componentDidMount () {
-    if (this.props.error) { return }
-    const {works} = this.props
-    if (works.answer) {
-      this.loadMyAnswer()
-    }
   }
 
-  async loadMyAnswer () {
-    const {courseId, workId} = this.props
-    let myAnswer = await LearnCourseAction.getSelfAnswer(courseId, workId)
-    myAnswer = myAnswer.response
-    this.setState({myAnswer: myAnswer})
+  componentDidMount = async () => {
+    let works = await this.props.homeworkContext.ajax.getWork(courseId, workId)
+    if (works.answer) {
+      this.props.homeworkContext.ajax.getSelfAnswer(courseId, workId)
+    }
+    this.props.homeworkContext.ajax.getChapterFeedback(courseId, workId)
   }
 
   render () {
     const {error} = this.props
     if (error) { return <Learn401 /> }
     const {courseId, workId, works, isH5} = this.props
-    const {myAnswer} = this.state
+    const {myAnswer} = this.props.homeworkContext
     return (
-      <Layout>
+      <div>
         <div className='homework-layout'>
           <Header isH5={isH5} />
           <div className='homework-content'>
@@ -121,7 +85,17 @@ export default class extends React.Component {
             }
           }
         `}</style>
-      </Layout>
+      </div>
     )
   }
 }
+
+export default function (props) {
+  return <Lib.Consumer>
+    {homeworkContext => (<HomeWorkPage homeworkContext={homeworkContext} {...props} />)}
+  </Lib.Consumer>
+}
+
+
+
+

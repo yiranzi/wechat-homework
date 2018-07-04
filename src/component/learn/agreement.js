@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ThemeConfig from '../../../config/theme'
+import ThemeConfig from '../../config/theme'
 import {Modal, Input, Button} from 'antd'
 import LearnCourseAction from '../../action/learn/course'
 
