@@ -2,7 +2,6 @@ import React from 'react'
 import ThemeConfig from '../../config/theme'
 import Layout from '../../src/component/layoutN'
 import LearnCourseAction from '../../src/action/learn/course'
-import CommonUtil from '../../src/util/common'
 import Header from '../../src/component/learn/homework/header'
 import MyWork from '../../src/component/learn/homework/mywork'
 import Learn401 from '../../src/component/learn/learn401'
@@ -16,7 +15,7 @@ export default class extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      myAnswer: {}
+      myAnswer: undefined
     }
   }
   static async getInitialProps ({req}) {
@@ -49,8 +48,6 @@ export default class extends React.Component {
     const {works} = this.props
     if (works.answer) {
       this.loadMyAnswer()
-    } else {
-      this.setState({myAnswer: 'nodata'})
     }
   }
 
@@ -72,7 +69,7 @@ export default class extends React.Component {
           <Header isH5={isH5} />
           <div className='homework-content'>
             <WorkQuestion works={works} />
-            {!CommonUtil.isEmpty(myAnswer) && (
+            {!myAnswer && (
               <MyWork
                 courseId={courseId}
                 workId={workId}

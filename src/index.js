@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Homework from './pages/homework'
+import Routes from './routes'
 // 注册微信。
 ReactDOM.render(
-  Homework,
+  Routes,
   document.getElementById('root')
 )
