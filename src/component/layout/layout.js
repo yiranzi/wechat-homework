@@ -1,10 +1,10 @@
 import React from 'react'
-import {LibProvider} from '../../context/componentsLib'
+import {HomeWorkProvider} from '../../context/homeworkContext'
 
 export default class Layout extends React.Component {
   render () {
-    return <LibProvider>
+    return <HomeWorkProvider>
       {this.props.children}
-    </LibProvider>
+    </HomeWorkProvider>
   }
 }

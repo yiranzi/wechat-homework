@@ -1,8 +1,7 @@
 import React from 'react'
-import Link from 'next/link'
+import {Link} from 'react-router-dom'
 import ThemeConfig from '../../../config/theme'
 import DateUtil from '../../../util/date'
-import LearnCourseAction from '../../../action/learn/course'
 
 import { Card, Button, Rate, Modal } from 'antd'
 
@@ -47,7 +46,7 @@ export default class extends React.Component {
       cancelText: '回去修改',
       onOk: async () => {
         try {
-          await LearnCourseAction.evaluateFeedback(myAnswer.learningWorkAnswerEvaluate.id, value)
+          await this.props.homeworkContext.ajax.evaluateFeedback(myAnswer.learningWorkAnswerEvaluate.id, value)
           this.setState({isEdit: false})
         } catch (error) {
           const status = [10001, 10002]
@@ -100,7 +99,7 @@ export default class extends React.Component {
                 反馈：<Rate onChange={(value) => this.handleChange(value)} disabled={!isEdit} />
               </div>
             )}
-            <Link href={`/learn/otherhomework/${learningWorkAnswerEvaluate.courseId}/${this.props.workId}/1`}>
+            <Link to={`/learn/otherhomework/${learningWorkAnswerEvaluate.courseId}/${this.props.workId}/1`}>
               <a>
                 <Button type='primary' className='show-all'>查看其他同学的回答</Button>
               </a>

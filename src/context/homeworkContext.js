@@ -1,15 +1,15 @@
 import React from 'react'
 import AxiosUtil from '../util/axios'
 var AjaxUtil = {}
+let Context = React.createContext()
+export const HomeWorkConsumer = Context.Consumer
 
-export const Lib = React.createContext()
-
-export class LibProvider extends React.Component {
+export class HomeWorkProvider extends React.Component {
   constructor (props) {
     super(props)
 
     this.ajax = {
-      getWork: async function (courseId, workId) {
+      getWork: async (courseId, workId) => {
         let works = await AxiosUtil.get(`/api/work/${courseId}/${workId}`)
         this.setState({
           works
@@ -17,15 +17,15 @@ export class LibProvider extends React.Component {
         return works
       },
 
-      getChapterFeedback: async function (courseId, workId) {
-        let workFeedback = await AxiosUtil.get(`/api/learning/getWorkFeedback/${courseId}/${workId}`)
+      getChapterFeedback: async (feedbackId) => {
+        let workFeedback = await AxiosUtil.get(`/api/course/getFeedback//${feedbackId}`)
         this.setState({
           workFeedback
         })
         return workFeedback
       },
 
-      getSelfAnswer: async function (courseId, workId) {
+      getSelfAnswer: async (courseId, workId) => {
         let myAnswer = await AxiosUtil.get(`/api/work/myAnswer/${courseId}/${workId}`)
         this.setState({
           myAnswer
@@ -33,140 +33,143 @@ export class LibProvider extends React.Component {
         return myAnswer
       },
 
-      getAnswerList: async function (courseId, workId, pn) {
+      getAnswerList: async (courseId, workId, pn) => {
         let answerList = await AxiosUtil.get(`/api/work/answerList/${courseId}/${workId}?pn=${pn}`)
         this.setState({
           answerList
         })
         return answerList
-      }
+      },
+
+      evaluateFeedback: async (evaluateId, score) => {
+        let evaluateFeedback = await AxiosUtil.get(`/api/work/evaluateFeedback/${evaluateId}?score=${score}`)
+        this.setState({
+          evaluateFeedback
+        })
+        return evaluateFeedback
+      },
 
       // -----
-      getLearningFootprint: function (courseId, cookie) {
+      getLearningFootprint: function (courseId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning/getLearningFootprint/${courseId}`
-        }, cookie)
+        })
       },
-      saveFootprint: function (courseId, data, cookie) {
+      saveFootprint: function (courseId, data) {
         return AjaxUtil({
           type: 'post',
           url: `/api/learning/saveFootprint`,
           data: data
-        }, cookie)
+        })
       },
-      getCourseMenu: function (courseId, cookie, userAgent, ip) {
+      getCourseMenu: function (courseId, userAgent, ip) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning/course/${courseId}`
-        }, cookie, userAgent, ip)
+        }, userAgent, ip)
       },
-      getCoursePage: function (courseId, sectionId, page, cookie, userAgent, ip) {
+      getCoursePage: function (courseId, sectionId, page, userAgent, ip) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning/course/${courseId}/${sectionId}/${page}`
-        }, cookie, userAgent, ip)
+        }, userAgent, ip)
       },
-      getWorkList: function (courseId, cookie) {
+      getWorkList: function (courseId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/work/workList/${courseId}`
-        }, cookie)
+        })
       },
 
 
 
-      getQuestionList: function (sectionId, pageNumber, pn, cookie) {
+      getQuestionList: function (sectionId, pageNumber, pn) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning-question/pageQuestionList/${sectionId}/${pageNumber}?pn=${pn}`
-        }, cookie)
+        })
       },
-      getMyQuestionList: function (sectionId, pageNumber, cookie) {
+      getMyQuestionList: function (sectionId, pageNumber) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning-question/myPageQuestionList/${sectionId}/${pageNumber}`
-        }, cookie)
+        })
       },
-      getQuestionEvaluate: function (questionId, cookie) {
+      getQuestionEvaluate: function (questionId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning-question/questionEvaluate/${questionId}`
-        }, cookie)
+        })
       },
-      getResourceByCourseId: function (courseId, cookie) {
+      getResourceByCourseId: function (courseId) {
         return AjaxUtil({
           type: 'get',
           'url': `/api/learning/getResource/${courseId}`
-        }, cookie)
+        })
       },
-      setWork: function (courseId, workId, data, cookie) {
+      setWork: function (courseId, workId, data) {
         return AjaxUtil({
           type: 'post',
           url: `/api/work/workComplete/${courseId}/${workId}`,
           data: data
-        }, cookie)
+        })
       },
       /* 作业答案点赞 */
-      answerStar: function (workAnswerId, cookie) {
+      answerStar: function (workAnswerId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/work/answerStar/${workAnswerId}`
-        }, cookie)
+        })
       },
       /* 评论作业答案 */
-      commentAnswer: function (workAnswerId, data, cookie) {
+      commentAnswer: function (workAnswerId, data) {
         return AjaxUtil({
           type: 'post',
           url: `/api/work/commentAnswer/${workAnswerId}`,
           data: data
-        }, cookie)
+        })
       },
       /* 评论作业答案 */
-      getWorkAnswerEvaluate: function (workAnswerId, cookie) {
+      getWorkAnswerEvaluate: function (workAnswerId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/work/workAnswerEvaluate/${workAnswerId}`
-        }, cookie)
+        })
       },
-      evaluateFeedback: function (evaluateId, score, cookie) {
-        return AjaxUtil({
-          type: 'get',
-          url: `/api/work/evaluateFeedback/${evaluateId}?score=${score}`
-        }, cookie)
-      },
+
       /* 查看作业答案评论分页列表 */
-      commentList: function (workAnswerId, pn, cookie) {
+      commentList: function (workAnswerId, pn) {
         return AjaxUtil({
           type: 'get',
           url: `/api/work/commentList/${workAnswerId}?pn=${pn}`
-        }, cookie)
+        })
       },
-      setSection: function (courseId, sectionId, cookie) {
+      setSection: function (courseId, sectionId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning/course/sectionComplete/${courseId}/${sectionId}`
-        }, cookie)
+        })
       },
       getMyCourse: function (cookie) {
         return AjaxUtil({
           type: 'get',
           url: '/api/learning/myCourse'
-        }, cookie)
+        })
       },
       getMyNewCourse: function (cookie) {
         return AjaxUtil({
           type: 'get',
           url: '/api/course/myCourse'
-        }, cookie)
+        })
       },
-      getTraining: function (id, cookie) {
+      getTraining: function (id) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning/getTraining/${id}`
-        }, cookie)
+        })
       },
-      signedAgreement: function (courseId, msg, cookie) {
+      signedAgreement: function (courseId, msg) {
         let url = '/api/learning/signedAgreement/' + courseId
         if (msg) {
           url += '?msg=' + msg
@@ -174,13 +177,13 @@ export class LibProvider extends React.Component {
         return AjaxUtil({
           type: 'get',
           url: url
-        }, cookie)
+        })
       },
-      getTestById: function (testId, cookie) {
+      getTestById: function (testId) {
         return AjaxUtil({
           type: 'get',
           url: `/api/learning-test/getByTestId/${testId}`
-        }, cookie)
+        })
       },
       testComplete: function (data) {
         return AjaxUtil({
@@ -189,17 +192,17 @@ export class LibProvider extends React.Component {
           data: data
         })
       },
-
-      setChapterFeedback: function (courseId, workId, score, content, cookie) {
-        let url = '/api/learning/workFeedback/' + courseId + '/' + workId + '?score=' + score
+      setChapterFeedback: function (feedbackId, score, content) {
+        let url = '/api/course/feedback/' + feedbackId + '?score=' + score
         if (content) {
           url += '&content=' + content
         }
         return AjaxUtil({
           type: 'get',
           url: url
-        }, cookie)
+        })
       }
+
     }
 
     this.state = {
@@ -207,17 +210,17 @@ export class LibProvider extends React.Component {
       workFeedback: undefined, //
       myAnswer: undefined, //
       answerList: undefined, //
+      evaluateFeedback: undefined, //
       ajax: this.ajax, // 获取
     }
-    this.vnodeFilter = this.vnodeFilter.bind(this)
   }
   // 内部使用的。
 
   render () {
     return (
-      <Lib.Provider value={this.state}>
+      <Context.Provider value={this.state}>
         {this.props.children}
-      </Lib.Provider>
+      </Context.Provider>
     )
   }
 }

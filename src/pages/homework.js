@@ -1,10 +1,12 @@
 import React from 'react'
 import ThemeConfig from '../config/theme'
 import Header from '../../src/component/learn/homework/header'
-// import MyWork from '../../src/component/learn/homework/mywork'
+import util from '../../src/util/util'
+import {HomeWorkConsumer} from '../context/homeworkContext'
+import MyWork from '../../src/component/learn/homework/mywork'
 // import Learn401 from '../../src/component/learn/learn401'
-// import WorkQuestion from '../../src/component/learn/homework/workQuestion'
-// import Evaluate from '../../src/component/learn/homework/evaluate'
+import WorkQuestion from '../../src/component/learn/homework/workQuestion'
+import Evaluate from '../../src/component/learn/homework/evaluate'
 // import Feedback from '../../src/component/learn/homework/feedback'
 
 const colorStyle = '#EA9108'
@@ -12,9 +14,18 @@ const colorStyle = '#EA9108'
 export class HomeWorkPage extends React.Component {
   constructor (props) {
     super(props)
+    this.state = {
+      courseId: undefined,
+      workId: undefined
+    }
   }
 
   componentDidMount = async () => {
+    let params = util.geUrlParams()
+    let {courseId, workId} = params
+    this.setState({
+      courseId, workId
+    })
     let works = await this.props.homeworkContext.ajax.getWork(courseId, workId)
     if (works.answer) {
       this.props.homeworkContext.ajax.getSelfAnswer(courseId, workId)
@@ -23,30 +34,24 @@ export class HomeWorkPage extends React.Component {
   }
 
   render () {
-    const {error} = this.props
-    if (error) { return <Learn401 /> }
-    const {courseId, workId, works, isH5} = this.props
-    const {myAnswer} = this.props.homeworkContext
-    return (
-      <div>
-        <div className='homework-layout'>
-          <Header isH5={isH5} />
-          <div className='homework-content'>
-            <WorkQuestion works={works} />
-            {!myAnswer && (
-              <MyWork
-                courseId={courseId}
-                workId={workId}
-                type={works.type}
-                myAnswer={this.state.myAnswer}
-                reloadData={() => this.loadMyAnswer()}
-              />
-            )}
-            <Evaluate myAnswer={myAnswer} workId={this.props.workId} />
-            <Feedback courseId={this.props.courseId} workId={this.props.workId} feedback={this.props.workFeedback} />
-          </div>
+    return <div>
+      <div className='homework-layout'>
+        <Header isH5={true} />
+        <div className='homework-content'>
+          <WorkQuestion homeworkContext={this.props.homeworkContext} works={this.props.homeworkContext.works} />
+          {/*{!myAnswer && (*/}
+            {/*<MyWork*/}
+              {/*courseId={courseId}*/}
+              {/*workId={workId}*/}
+              {/*type={works.type}*/}
+              {/*myAnswer={this.state.myAnswer}*/}
+              {/*reloadData={() => this.loadMyAnswer()}*/}
+            {/*/>*/}
+          {/*)}*/}
+          <Evaluate homeworkContext={this.props.homeworkContext} myAnswer={this.props.homeworkContext.myAnswer} workId={this.state.workId} />
         </div>
-        <style jsx>{`
+      </div>
+      <style jsx>{`
           .homework-layout {
             background: #F7F9FB;
             min-height: 100vh;
@@ -58,7 +63,7 @@ export class HomeWorkPage extends React.Component {
             padding: 0 15px 15px 15px;
           }
         `}</style>
-        <style global jsx>{`
+      <style global jsx>{`
           .ant-card {
             margin-top: 20px;
             box-shadow: 0 1px 6px rgba(0,0,0,.2);
@@ -85,15 +90,14 @@ export class HomeWorkPage extends React.Component {
             }
           }
         `}</style>
-      </div>
-    )
+    </div>
   }
 }
 
 export default function (props) {
-  return <Lib.Consumer>
+  return <HomeWorkConsumer>
     {homeworkContext => (<HomeWorkPage homeworkContext={homeworkContext} {...props} />)}
-  </Lib.Consumer>
+  </HomeWorkConsumer>
 }
 
 

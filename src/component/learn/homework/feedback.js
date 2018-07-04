@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Input, Row, Col, Button, Modal } from 'antd'
+import { Card, Input, Row, Col, Button, Modal, Rate } from 'antd'
 import ThemeConfig from '../../../config/theme'
 import CommonUtil from '../../../util/common'
 import LearnCourseAction from '../../../action/learn/course'
@@ -10,20 +10,23 @@ export default class extends React.Component {
   constructor (props) {
     super(props)
     let feedback = {
-      courseId: this.props.courseId,
-      workId: this.props.workId,
+      feedbackId: this.props.feedbackId,
       score: 0,
       content: null
     }
+    let haveFeedback
     if (this.props.feedback) {
       feedback = this.props.feedback
+      haveFeedback = true
     }
     this.state = {
+      haveFeedback: haveFeedback,
       feedback: feedback,
       feedbackContent: ['', '（选填）好吧，勇敢说出来，我不会打小报告的～',
         '（选填）额，一定有什么地方讲的不好的，写下来，我们一定去改进～',
         '（选填）哪些地方让你印象深刻，写下来，我去告诉老师，让TA美一下～']
     }
+    this.selectFeedback = this.selectFeedback.bind(this)
   }
 
   handleChange (e) {
@@ -34,7 +37,7 @@ export default class extends React.Component {
     })
   }
 
-  selectFeedback (value, e) {
+  selectFeedback (value) {
     let {feedback} = this.state
     feedback.score = value
     this.setState({
@@ -64,9 +67,12 @@ export default class extends React.Component {
       cancelText: '回去修改',
       onOk: async () => {
         try {
-          await LearnCourseAction.setChapterFeedback(feedback.courseId, feedback.workId, feedback.score, feedback.content)
+          await LearnCourseAction.setChapterFeedback(feedback.feedbackId, feedback.score, feedback.content)
           feedback.id = 1
-          this.setState({feedback})
+          this.setState({
+            feedback,
+            haveFeedback: true
+          })
         } catch (error) {
           const status = [10001]
 
@@ -95,37 +101,35 @@ export default class extends React.Component {
               <Col span={7} sm={7} xs={24} className='fb-tips'>觉得本章教学内容如何？</Col>
               <Col span={10} sm={10} xs={24} className='my-text-center'>
                 <Row>
-                  <Col span={8}><i className={'fb1 select' + feedback.score + (feedback.id ? '' : ' ed')} onClick={e => !feedback.id && this.selectFeedback(1, e)}>很差<img src='/static/img/learn/fb1_active.png' /></i></Col>
-                  <Col span={8}><i className={'fb2 select' + feedback.score + (feedback.id ? '' : ' ed')} onClick={e => !feedback.id && this.selectFeedback(2, e)}>一般<img src='/static/img/learn/fb2_active.png' /></i></Col>
-                  <Col span={8}><i className={'fb3 select' + feedback.score + (feedback.id ? '' : ' ed')} onClick={e => !feedback.id && this.selectFeedback(3, e)}>很好<img src='/static/img/learn/fb3_active.png' /></i></Col>
+                  <Rate onChange={this.selectFeedback} defaultValue={this.state.feedback.score} disabled={this.state.haveFeedback} />
                 </Row>
               </Col>
               {!feedback.id &&
-                <Col span={7} sm={7} xs={24} className='my-text-right fb-btn-col'>
-                  {feedback.score === 0 && <Button className='fb-btn' disabled title='请先选择反馈类型'>提交</Button>}
-                  {feedback.score !== 0 && <Button className='fb-btn submit' type='default' onClick={() => { this.submit() }}>提交</Button>}
-                </Col>
+              <Col span={7} sm={7} xs={24} className='my-text-right fb-btn-col'>
+                {feedback.score === 0 && <Button className='fb-btn' disabled title='请先选择反馈类型'>提交</Button>}
+                {feedback.score !== 0 && <Button className='fb-btn submit' type='default' onClick={() => { this.submit() }}>提交</Button>}
+              </Col>
               }
             </Row>
             {!feedback.id && feedback.score !== 0 &&
-              <Row>
-                <Col span={24}>
-                  <Input type='textarea'
-                    rows={5}
-                    className='feedback-input'
-                    maxLength={500}
-                    placeholder={this.state.feedbackContent[this.state.feedback.score]}
-                    onChange={(e) => { this.handleChange(e) }}
-                  />
-                </Col>
-              </Row>
+            <Row>
+              <Col span={24}>
+                <Input type='textarea'
+                       rows={5}
+                       className='feedback-input'
+                       maxLength={500}
+                       placeholder={this.state.feedbackContent[this.state.feedback.score]}
+                       onChange={(e) => { this.handleChange(e) }}
+                />
+              </Col>
+            </Row>
             }
             {feedback.id &&
-              <Row>
-                <Col span={24}>
-                  <div className='feedback-input' dangerouslySetInnerHTML={{__html: CommonUtil.replaceAll(feedback.content || '', '\n', '<br />')}} />
-                </Col>
-              </Row>
+            <Row>
+              <Col span={24}>
+                <div className='feedback-input' dangerouslySetInnerHTML={{__html: CommonUtil.replaceAll(feedback.content || '', '\n', '<br />')}} />
+              </Col>
+            </Row>
             }
           </div>
         </Card>
