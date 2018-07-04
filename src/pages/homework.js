@@ -7,7 +7,6 @@ import MyWork from '../../src/component/learn/homework/mywork'
 // import Learn401 from '../../src/component/learn/learn401'
 import WorkQuestion from '../../src/component/learn/homework/workQuestion'
 import Evaluate from '../../src/component/learn/homework/evaluate'
-// import Feedback from '../../src/component/learn/homework/feedback'
 
 const colorStyle = '#EA9108'
 
@@ -30,24 +29,26 @@ export class HomeWorkPage extends React.Component {
     if (works.answer) {
       this.props.homeworkContext.ajax.getSelfAnswer(courseId, workId)
     }
-    this.props.homeworkContext.ajax.getChapterFeedback(courseId, workId)
   }
 
   render () {
+    let {courseId, workId} = this.state
+    let {works, myAnswer} = this.props.homeworkContext
+    let {homeworkContext} = this.props
     return <div>
       <div className='homework-layout'>
         <Header isH5={true} />
         <div className='homework-content'>
-          <WorkQuestion homeworkContext={this.props.homeworkContext} works={this.props.homeworkContext.works} />
-          {/*{!myAnswer && (*/}
-            {/*<MyWork*/}
-              {/*courseId={courseId}*/}
-              {/*workId={workId}*/}
-              {/*type={works.type}*/}
-              {/*myAnswer={this.state.myAnswer}*/}
-              {/*reloadData={() => this.loadMyAnswer()}*/}
-            {/*/>*/}
-          {/*)}*/}
+          <WorkQuestion homeworkContext={this.props.homeworkContext} works={works} />
+          {!this.props.homeworkContext.myAnswer && works && (
+            <MyWork
+              courseId={courseId}
+              workId={workId}
+              type={works.type}
+              myAnswer={myAnswer}
+              homeworkContext={homeworkContext}
+            />
+          )}
           <Evaluate homeworkContext={this.props.homeworkContext} myAnswer={this.props.homeworkContext.myAnswer} workId={this.state.workId} />
         </div>
       </div>

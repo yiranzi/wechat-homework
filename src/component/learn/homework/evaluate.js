@@ -100,9 +100,7 @@ export default class extends React.Component {
               </div>
             )}
             <Link to={`/learn/otherhomework/${learningWorkAnswerEvaluate.courseId}/${this.props.workId}/1`}>
-              <a>
                 <Button type='primary' className='show-all'>查看其他同学的回答</Button>
-              </a>
             </Link>
           </div>
         </Card>

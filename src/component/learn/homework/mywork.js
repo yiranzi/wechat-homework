@@ -1,17 +1,16 @@
 import React from 'react'
-import Link from 'next/link'
+import {Link} from 'react-router-dom'
 import {MyTextArea, MyUploader} from './workItem'
 import ThemeConfig from '../../../config/theme'
 import ToolsUtil from '../../../util/tools'
 import CommonUtil from '../../../util/common'
-import LearnCourseAction from '../../../../src/action/learn/course'
 import { Button, Card } from 'antd'
 
 export default class extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      isEdit: !this.props.myAnswer.answer,
+      isEdit: !(this.props.myAnswer && this.props.myAnswer.answer),
       value: ''
     }
   }
@@ -20,8 +19,8 @@ export default class extends React.Component {
     let {courseId, workId} = this.props
     try {
       this.setState({isEdit: false})
-      await LearnCourseAction.setWork(courseId, workId, value)
-      this.props.reloadData()
+      await this.props.homeworkContext.setWork(courseId, workId, value)
+      this.props.homeworkContext.ajax.getSelfAnswer(courseId, workId)
     } catch (error) {
       this.setState({isEdit: true})
     }
@@ -58,10 +57,8 @@ export default class extends React.Component {
   isShowActionGroup (type) {
     return (
       <div className='action-group'>
-        <Link href={`/learn/otherhomework/${this.props.courseId}/${this.props.workId}/1`}>
-          <a>
-            <Button className='show-all' type='primary'>查看其他同学的回答</Button>
-          </a>
+        <Link to={`/learn/otherhomework/${this.props.courseId}/${this.props.workId}/1`}>
+          <Button className='show-all' type='primary'>查看其他同学的回答</Button>
         </Link>
         <Button className='edit-mine default' onClick={() => this.setState({isEdit: true})}>我要优化答案</Button>
         <style jsx>{`
@@ -128,7 +125,7 @@ export default class extends React.Component {
           <MyUploader
             courseId={courseId}
             workId={workId}
-            defaultValue={myAnswer.answer}
+            defaultValue={myAnswer && myAnswer.answer}
             isEdit={isEdit}
             onChange={() => { this.setState({isEdit: false}) }}
           />

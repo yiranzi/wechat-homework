@@ -49,6 +49,22 @@ export class HomeWorkProvider extends React.Component {
         return evaluateFeedback
       },
 
+      setWork: async (courseId, workId, data) => {
+        let workComplete = await AxiosUtil.get(`/api/work/workComplete/${courseId}/${workId}`)
+        this.setState({
+          workComplete
+        })
+        return workComplete
+      },
+
+      abv: async (a) => {
+        let na = await AxiosUtil.get(`url`)
+        this.setState({
+          na
+        })
+        return na
+      },
+
       // -----
       getLearningFootprint: function (courseId) {
         return AjaxUtil({
@@ -108,13 +124,7 @@ export class HomeWorkProvider extends React.Component {
           'url': `/api/learning/getResource/${courseId}`
         })
       },
-      setWork: function (courseId, workId, data) {
-        return AjaxUtil({
-          type: 'post',
-          url: `/api/work/workComplete/${courseId}/${workId}`,
-          data: data
-        })
-      },
+
       /* 作业答案点赞 */
       answerStar: function (workAnswerId) {
         return AjaxUtil({
