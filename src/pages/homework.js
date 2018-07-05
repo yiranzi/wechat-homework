@@ -2,7 +2,6 @@ import React from 'react'
 import ThemeConfig from '../config/theme'
 import Header from '../../src/component/learn/homework/header'
 import util from '../../src/util/util'
-import {HomeWorkConsumer} from '../context/homeworkContext'
 import MyWork from '../../src/component/learn/homework/mywork'
 // import Learn401 from '../../src/component/learn/learn401'
 import WorkQuestion from '../../src/component/learn/homework/workQuestion'
@@ -10,29 +9,13 @@ import Evaluate from '../../src/component/learn/homework/evaluate'
 
 const colorStyle = '#EA9108'
 
-export class HomeWorkPage extends React.Component {
+export default class extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      courseId: undefined,
-      workId: undefined
-    }
-  }
-
-  componentDidMount = async () => {
-    let params = util.geUrlParams()
-    let {courseId, workId} = params
-    this.setState({
-      courseId, workId
-    })
-    let works = await this.props.homeworkContext.ajax.getWork(courseId, workId)
-    if (works.answer) {
-      this.props.homeworkContext.ajax.getSelfAnswer(courseId, workId)
-    }
   }
 
   render () {
-    let {courseId, workId} = this.state
+    let {courseId, workId} = util.geUrlParams(this.props.location.search)
     let {works, myAnswer} = this.props.homeworkContext
     let {homeworkContext} = this.props
     return <div>
@@ -40,7 +23,7 @@ export class HomeWorkPage extends React.Component {
         <Header isH5={true} />
         <div className='homework-content'>
           <WorkQuestion homeworkContext={this.props.homeworkContext} works={works} />
-          {!this.props.homeworkContext.myAnswer && works && (
+          {this.props.homeworkContext.myAnswer && works && (
             <MyWork
               courseId={courseId}
               workId={workId}
@@ -49,7 +32,7 @@ export class HomeWorkPage extends React.Component {
               homeworkContext={homeworkContext}
             />
           )}
-          <Evaluate homeworkContext={this.props.homeworkContext} myAnswer={this.props.homeworkContext.myAnswer} workId={this.state.workId} />
+          <Evaluate homeworkContext={this.props.homeworkContext} myAnswer={this.props.homeworkContext.myAnswer} workId={workId} />
         </div>
       </div>
       <style jsx>{`
@@ -95,11 +78,6 @@ export class HomeWorkPage extends React.Component {
   }
 }
 
-export default function (props) {
-  return <HomeWorkConsumer>
-    {homeworkContext => (<HomeWorkPage homeworkContext={homeworkContext} {...props} />)}
-  </HomeWorkConsumer>
-}
 
 
 

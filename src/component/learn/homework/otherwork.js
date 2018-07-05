@@ -2,8 +2,9 @@ import React from 'react'
 import WorkQuestion from './workQuestion'
 import AnswerContent from './answerContent'
 import { Tabs, Card } from 'antd'
-const TabPane = Tabs.TabPane
+import util from '../../../util/util'
 
+const TabPane = Tabs.TabPane
 const colorStyle = '#F0A200'
 
 export default class extends React.Component {
@@ -22,8 +23,8 @@ export default class extends React.Component {
   }
 
   renderFooterBar () {
-    let {totalSize} = this.props
-    let pageNumber = parseInt(this.props.pageNumber)
+    let {totalSize} = this.props.homeworkContext
+    let pageNumber = parseInt(util.geUrlParams(this.props.location.search).pn)
     const perPageSize = 10
     let totalPageSize = Math.ceil(totalSize / perPageSize)
     let isFirst = pageNumber <= 1
@@ -57,29 +58,30 @@ export default class extends React.Component {
   }
 
   render () {
-    let {work} = this.props
+    let {works} = this.props.homeworkContext
+    console.log('renderotherwork')
     let dom
-    if (work) {
-      let {answerList = [], totalSize, myAnswer} = this.props
-      if (work.answer) {
+    if (works) {
+      let {answerList = [], totalSize, myAnswer} = this.props.homeworkContext
+      if (works.answer) {
         dom = (
           <div className='homework-page'>
             <div className='padding-container'>
-              <WorkQuestion works={work} />
+              <WorkQuestion works={works} {...this.props} />
             </div>
             <Tabs tabBarStyle={this.tabStyle} defaultActiveKey={this.state.currentTabSelect} onChange={(index) => { this.setState({ currentTabSelect: index }) }}>
               <TabPane tab={`全部回答（${totalSize}）`} key='0'>
                 {answerList.map((studentAnswer, index) => {
                   return (
                     <Card key={`answerlist-${index}`}>
-                      <AnswerContent answerInfo={studentAnswer} answerDataType={work.type} clickStar={this.props.clickStar} />
+                      <AnswerContent answerInfo={studentAnswer} answerDataType={works.type} clickStar={this.props.clickStar} />
                     </Card>
                   )
                 })}
               </TabPane>
               <TabPane tab='我的回答' key='1'>
                 <Card>
-                  <AnswerContent answerInfo={myAnswer} answerDataType={work.type} clickStar={this.props.clickStar} />
+                  <AnswerContent answerInfo={myAnswer} answerDataType={works.type} clickStar={this.props.clickStar} />
                 </Card>
               </TabPane>
             </Tabs>

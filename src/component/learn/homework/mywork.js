@@ -19,7 +19,7 @@ export default class extends React.Component {
     let {courseId, workId} = this.props
     try {
       this.setState({isEdit: false})
-      await this.props.homeworkContext.setWork(courseId, workId, value)
+      await this.props.homeworkContext.ajax.setWork(courseId, workId, value)
       this.props.homeworkContext.ajax.getSelfAnswer(courseId, workId)
     } catch (error) {
       this.setState({isEdit: true})
@@ -57,8 +57,8 @@ export default class extends React.Component {
   isShowActionGroup (type) {
     return (
       <div className='action-group'>
-        <Link to={`/learn/otherhomework/${this.props.courseId}/${this.props.workId}/1`}>
-          <Button className='show-all' type='primary'>查看其他同学的回答</Button>
+        <Link to={`/homework/other/?courseId=${this.props.courseId}&workId=${this.props.workId}&pn=1`}>
+          <Button className='show-all' type='primary'>查看其他同学的回答1</Button>
         </Link>
         <Button className='edit-mine default' onClick={() => this.setState({isEdit: true})}>我要优化答案</Button>
         <style jsx>{`
@@ -112,6 +112,7 @@ export default class extends React.Component {
   render () {
     const {courseId, workId, type, myAnswer} = this.props
     const {isEdit} = this.state
+    console.log('renderhomework')
     return (
       <Card className='work-item'>
         {ToolsUtil.isTextarea(type) && (

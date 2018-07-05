@@ -34,11 +34,11 @@ export class HomeWorkProvider extends React.Component {
       },
 
       getAnswerList: async (courseId, workId, pn) => {
-        let answerList = await AxiosUtil.get(`/api/work/answerList/${courseId}/${workId}?pn=${pn}`)
+        let res = await AxiosUtil.get(`/api/work/answerList/${courseId}/${workId}?pn=${pn}`)
         this.setState({
-          answerList
+          answerList: res.data,
+          totalSize: res.totalSize
         })
-        return answerList
       },
 
       evaluateFeedback: async (evaluateId, score) => {
@@ -50,11 +50,19 @@ export class HomeWorkProvider extends React.Component {
       },
 
       setWork: async (courseId, workId, data) => {
-        let workComplete = await AxiosUtil.get(`/api/work/workComplete/${courseId}/${workId}`)
+        let workComplete = await AxiosUtil.post(`/api/work/workComplete/${courseId}/${workId}`, data)
         this.setState({
           workComplete
         })
         return workComplete
+      },
+
+      answerStar: async (workAnswerId) => {
+        let answerStar = await AxiosUtil.get(`/api/work/answerStar/${workAnswerId}`)
+        this.setState({
+          answerStar
+        })
+        return answerStar
       },
 
       abv: async (a) => {
@@ -125,13 +133,7 @@ export class HomeWorkProvider extends React.Component {
         })
       },
 
-      /* 作业答案点赞 */
-      answerStar: function (workAnswerId) {
-        return AjaxUtil({
-          type: 'get',
-          url: `/api/work/answerStar/${workAnswerId}`
-        })
-      },
+
       /* 评论作业答案 */
       commentAnswer: function (workAnswerId, data) {
         return AjaxUtil({
