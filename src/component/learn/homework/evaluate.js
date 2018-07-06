@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import ThemeConfig from '../../../config/theme'
+import Date from '../../../util/date'
 import DateUtil from '../../../util/date'
 
 import { Card, Button, Rate, Modal } from 'antd'
@@ -61,6 +62,16 @@ export default class extends React.Component {
       }
     })
   }
+
+  getTimeStatus (updateTime) {
+    let {isPassOneday, time} = Date.fromNow(updateTime)
+    if (isPassOneday) {
+      return time
+    } else {
+      return time
+    }
+  }
+
   render () {
     const {myAnswer} = this.props
     if (!myAnswer) { // 已回答
@@ -88,21 +99,30 @@ export default class extends React.Component {
             </div>
           </div>
           <div className='evaluate'>{learningWorkAnswerEvaluate.evaluate}</div>
-          <div className='wrap'>
-            {learningWorkAnswerEvaluate.score !== null && (
-              <div className='my-evaluate'>
-                反馈：<Rate value={learningWorkAnswerEvaluate.score} disabled />
+          {myAnswer && myAnswer.learningWorkAnswerEvaluate && myAnswer.learningWorkAnswerEvaluate.createTime && <div className='wrap'>
+            <Link to={`/homework/feedbackteacher?feedbackId=${myAnswer.learningWorkAnswerEvaluate.id}`}>
+              <div className="zao-view">
+                <div className="zao-flex-center" style={{width: '94px',height: '28px',border: '1px solid #F0A200',borderRadius: '14px'}}>
+                  <div className="zao-afont-normal" style={{color: '#F0A200'}}>
+                    {myAnswer.learningWorkAnswerEvaluate.star1 === null ? '评价导师' : '已评价'}
+                  </div>
+                </div>
               </div>
-            )}
-            {learningWorkAnswerEvaluate.score === null && (
-              <div className='my-evaluate'>
-                反馈：<Rate onChange={(value) => this.handleChange(value)} disabled={!isEdit} />
-              </div>
-            )}
-            <Link to={`/learn/otherhomework/${learningWorkAnswerEvaluate.courseId}/${this.props.workId}/1`}>
-                <Button type='primary' className='show-all'>查看其他同学的回答</Button>
             </Link>
-          </div>
+            <div className="zao-view" style={{marginLeft: '10px'}}>
+              <div className="zao-flex" style={{backgroundColor: '#F0A200',paddingRight: '13px',paddingLeft: '13px',justifyContent: 'space-between',height: '28px',border: '1px solid #F0A200',borderRadius: '14px'}}>
+                <div className="zao-afont-normal" style={{color: '#FFFFFF'}}>
+                  我要追问
+                </div>
+                <div className="zao-afont-normal zao-font-11" style={{marginLeft: '3px',color: '#FDDB95'}}>
+                  {this.getTimeStatus(myAnswer.learningWorkAnswerEvaluate.createTime)}
+                </div>
+              </div>
+            </div>
+          </div>}
+          <Link style={{width: '100%'}} to={`/learn/otherhomework/${learningWorkAnswerEvaluate.courseId}/${this.props.workId}/1`}>
+            <Button type='primary' className='show-all'>查看其他同学的回答</Button>
+          </Link>
         </Card>
         <style jsx>{`
           .title {
@@ -144,7 +164,7 @@ export default class extends React.Component {
             border-top: 1px solid #E6E6E6;
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             margin-top: 20px;
             padding-top: 20px;

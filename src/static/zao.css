@@ -1,0 +1,57 @@
+.zao-bold {
+	font-weight: bold;
+}
+.zao-border-normal {
+	border: 2px solid white;
+}
+.zao-center {
+	text-align: center;
+}
+.zao-color-gray {
+	color: gray;
+}
+.zao-color-white {
+	color: #ffffff;
+}
+.zao-flex-center {
+	justify-content: center;
+	align-items: center;
+	display: flex;
+}
+.zao-flex-column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.zao-flex {
+	justify-content: flex-start;
+	display: flex;
+}
+.zao-font-11 {
+	font-size: 11px;
+}
+.zao-font-16 {
+	font-size: 16px;
+}
+.zao-font-bold {
+	font-weight: bold;
+}
+.zao-afont-info {
+	font-size: 11px;
+	color: #333333;
+	line-height: 16px;
+}
+.zao-afont-normal {
+	font-size: 14px;
+	color: #333333;
+	line-height: 24px;
+}
+.zao-radius-4 {
+	border-radius: 4px;
+}
+.zao-shdow {
+	box-shadow: 0px 2px 4px 0px rgba(122,15,15,0.15);
+}
+.zao-view {
+	box-sizing: border-box;
+}

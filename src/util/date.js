@@ -1,3 +1,4 @@
+import moment from 'moment'
 const DateUtil = {
   // 格式化日期
   format: function (date, fmt) {
@@ -62,7 +63,20 @@ const DateUtil = {
 
   formatStrToDate: function (dataStr, fmt) {
     return this.format(this.coverStrToDate(dataStr), fmt)
-  }
+  },
+
+  fromNow: function (then) {
+    var now = moment().format("YYYY-MM-DD[T]HH:mm:ss");
+    var ms = moment(now,"YYYY-MM-DD[T]HH:mm:ss").diff(moment(then,"YYYY-MM-DD[T]HH:mm:ss"));
+
+    var d = moment.duration(ms);
+    var s = Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss");
+    return {
+      isPassOneday: ms > 1 * 24 * 3600,
+      time: s
+    }
+  },
+
 }
 
 export default DateUtil
