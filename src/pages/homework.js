@@ -23,7 +23,7 @@ export default class extends React.Component {
         <Header isH5={true} />
         <div className='homework-content'>
           <WorkQuestion homeworkContext={this.props.homeworkContext} works={works} />
-          {works && (
+          {myAnswer && works && (
             <MyWork
               courseId={courseId}
               workId={workId}

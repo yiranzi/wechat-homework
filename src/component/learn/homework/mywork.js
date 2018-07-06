@@ -14,6 +14,21 @@ export default class extends React.Component {
       value: ''
     }
   }
+  componentDidUpdate (prevProps) {
+    if (this.props.myAnswer !== prevProps.myAnswer) {
+      console.log('update my work')
+      this.state = {
+        isEdit: !(this.props.myAnswer && this.props.myAnswer.answer),
+      }
+    }
+  }
+
+  requestEvaluate () {
+
+    alert('gege')
+    this.props.homeworkContext.ajax.requestEvaluate(this.props.myAnswer.id)
+  }
+
   async submit () {
     let {value} = this.state
     let {courseId, workId} = this.props
@@ -61,6 +76,8 @@ export default class extends React.Component {
           <Button className='show-all' type='primary'>查看其他同学的回答</Button>
         </Link>
         <Button className='edit-mine default' onClick={() => this.setState({isEdit: true})}>我要优化答案</Button>
+        {/*是否已发起请老师点评*/}
+        {true ? <Button className='edit-mine default' onClick={() => {this.requestEvaluate()}}>请老师点评</Button> : <div>123</div>}
         <style jsx>{`
           .action-group {
             margin-top: 20px;
@@ -111,8 +128,10 @@ export default class extends React.Component {
   }
   render () {
     const {courseId, workId, type, myAnswer} = this.props
+    console.log(myAnswer)
     const {isEdit} = this.state
     console.log('renderhomework')
+    console.log(isEdit)
     return (
       <Card className='work-item'>
         {ToolsUtil.isTextarea(type) && (

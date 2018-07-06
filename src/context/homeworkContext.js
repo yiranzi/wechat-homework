@@ -65,6 +65,10 @@ export class HomeWorkProvider extends React.Component {
         return answerStar
       },
 
+      requestEvaluate: async (workAnswerId) => {
+        return await AxiosUtil.get(`/api/work/requestEvaluate/${workAnswerId}`)
+      },
+
       abv: async (a) => {
         let na = await AxiosUtil.get(`url`)
         this.setState({
